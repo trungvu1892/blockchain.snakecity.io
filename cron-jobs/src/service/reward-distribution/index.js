@@ -91,7 +91,7 @@ class Service {
         isRunning = true;
 
         // Gets pending requests
-        const result = await database.query("select * from public.claims where \"claimStatus\" = 'Pending' order by id desc", {
+        const result = await database.query("select * from public.claims where \"claimStatus\" = 'Pending' and \"claimRewardAmount\" > 0 order by id desc", {
             bind: []
         });
 
