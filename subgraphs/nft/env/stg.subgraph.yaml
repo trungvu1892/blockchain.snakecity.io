@@ -1,0 +1,66 @@
+specVersion: 0.0.2
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum/contract
+    name: MysteryBox
+    network: chapel
+    source:
+      address: "0xc4A8d4A51b8E0C04FcDf3F01d0E6490F53c2c2a1"
+      abi: MysteryBox
+      startBlock: 15228974
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.3
+      language: wasm/assemblyscript
+      entities:
+        - MysteryBoxOwnership
+      abis:
+        - name: MysteryBox
+          file: ./abis/MysteryBox.json
+      eventHandlers:
+        - event: Transfer(indexed address,indexed address,indexed uint256)
+          handler: handleTransfer
+      file: ./src/mappings/mystery_box.ts
+  - kind: ethereum/contract
+    name: GameItem
+    network: chapel
+    source:
+      address: "0x747Ff115b63EE5D80f869Bb8dBA07D52cBe9C16d"
+      abi: GameItem
+      startBlock: 15228974
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.3
+      language: wasm/assemblyscript
+      entities:
+        - GameItemOwnership
+      abis:
+        - name: GameItem
+          file: ./abis/GameItem.json
+      eventHandlers:
+        - event: Transfer(indexed address,indexed address,indexed uint256)
+          handler: handleTransfer
+      file: ./src/mappings/game_item.ts
+  - kind: ethereum/contract
+    name: BoxStore
+    network: chapel
+    source:
+      address: "0x4288132DdcC91Ea264Fa9B52000db1Fcb7E9beBd"
+      abi: BoxStore
+      startBlock: 15228974
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.3
+      language: wasm/assemblyscript
+      entities:
+        - MysteryBoxSold
+      abis:
+        - name: BoxStore
+          file: ./abis/BoxStore.json
+      eventHandlers:
+        - event: BoxBought(address,uint256[],uint256)
+          handler: handleBoxBought
+        - event: BoxOpened(address,uint256,uint256[],uint256)
+          handler: handleBoxOpened
+      file: ./src/mappings/box_store.ts

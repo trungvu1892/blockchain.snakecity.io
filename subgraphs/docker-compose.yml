@@ -1,0 +1,41 @@
+version: '3'
+services:
+  graph-node:
+    image: graphprotocol/graph-node
+    ports:
+      - '8000:8000'
+      - '8001:8001'
+      - '8020:8020'
+      - '8030:8030'
+      - '8040:8040'
+    depends_on:
+      - ipfs
+      - postgres
+    restart: always
+    environment:
+      postgres_host: postgres
+      postgres_port: 5432
+      postgres_user: postgres
+      postgres_pass: K4hL5MwcqxQUk4XZz47
+      postgres_db: graph-node
+      ipfs: 'ipfs:8080'
+      ethereum: 'chapel:https://data-seed-prebsc-1-s2.binance.org:8545/'
+      RUST_LOG: info
+  ipfs:
+    image: ipfs/go-ipfs:latest
+    ports:
+      - '5001:5001'
+      - '8080:8080'
+    volumes:
+      - ./data/ipfs:/data/ipfs
+  postgres:
+    image: postgres
+    ports:
+      - '5432:5432'
+    command: ["postgres", "-cshared_preload_libraries=pg_stat_statements"]
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: K4hL5MwcqxQUk4XZz47
+      POSTGRES_DB: graph-node
+    volumes:
+      - ./data/postgres:/data/postgres

@@ -1,0 +1,29 @@
+specVersion: 0.0.2
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum/contract
+    name: Marketplace
+    network: chapel
+    source:
+      address: "0xd5c734e4aea404e81fd679fcb98be53114f253c6"
+      abi: Marketplace
+      startBlock: 15716491
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.3
+      language: wasm/assemblyscript
+      entities:
+        - SellOrder
+        - MatchedOrder
+      abis:
+        - name: Marketplace
+          file: ./abis/Marketplace.json
+      eventHandlers:
+        - event: AskCreated(address,address,address,uint256,uint256)
+          handler: handleAskCreated
+        - event: AskCanceled(address,address,address,uint256,uint256)
+          handler: handleAskCanceled
+        - event: TokenSold(address,address,address,address,uint256,uint256)
+          handler: handleTokenSold
+      file: ./src/mappings/marketplace.ts

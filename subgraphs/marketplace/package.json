@@ -1,0 +1,24 @@
+{
+  "name": "marketplace-subgraph",
+  "version": "1.0.0",
+  "scripts": {
+    "codegen": "graph codegen --output-dir src/types/",
+    "build": "graph build",
+    "create-dev": "graph create marketplace --node http://161.97.108.245:8020",
+    "deploy-dev": "graph deploy marketplace --node http://161.97.108.245:8020 --ipfs http://161.97.108.245:5001",
+    "remove-dev": "graph remove marketplace --node http://161.97.108.245:8020",
+    "create-stg": "graph create marketplace --node http://194.233.86.215:8020",
+    "deploy-stg": "graph deploy marketplace --node http://194.233.86.215:8020 --ipfs http://194.233.86.215:5001",
+    "remove-stg": "graph remove marketplace --node http://194.233.86.215:8020"
+  },
+  "devDependencies": {
+    "@graphprotocol/graph-cli": "^0.19.0",
+    "@graphprotocol/graph-ts": "^0.19.0",
+    "@typescript-eslint/eslint-plugin": "^4.13.0",
+    "@typescript-eslint/parser": "^4.13.0",
+    "eslint": "^7.17.0",
+    "eslint-config-prettier": "^7.1.0",
+    "prettier": "^2.2.1",
+    "typescript": "^4.1.3"
+  }
+}

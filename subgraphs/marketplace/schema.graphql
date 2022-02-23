@@ -1,0 +1,23 @@
+type SellOrder @entity {
+    id: ID!                 # transaction hash
+    erc721: String
+    tokenId: BigInt
+    seller: String
+    price: BigInt
+    erc20: String
+    status: Boolean
+    transaction: String
+    timestamp: BigInt
+}
+
+type MatchedOrder @entity {
+    id: ID!                 # transaction hash
+    erc721: String
+    tokenId: BigInt
+    seller: String
+    buyer: String
+    price: BigInt
+    erc20: String
+    transaction: String
+    timestamp: BigInt
+}
