@@ -10,7 +10,9 @@ contract TokenVesting is Ownable {
 
     using SafeERC20 for IERC20;
 
-    event PoolAdded(uint256 poolId, uint256 startTime, uint256 cliff, uint256 duration);
+    uint256 constant public ONE_HUNDRED_PERCENT = 10000; // 100%
+
+    event PoolAdded(uint256 poolId, uint256 startTime, uint256 cliff, uint256 vestingCliff, uint256 vestingDuration, uint256 tgePercent);
     event PoolRemoved(uint256 poolId);
     event TokenLocked(uint256 poolId, address account, uint256 amount);
     event TokenReleased(uint256 poolId, address account, uint256 amount);
@@ -18,9 +20,11 @@ contract TokenVesting is Ownable {
     IERC20 public token;
 
     struct Pool {
-        uint256 startTime;      // second
-        uint256 cliff;          // second
-        uint256 duration;       // second
+        uint256 startTime;              // second
+        uint256 cliff;                  // second
+        uint256 vestingCliff;           // second
+        uint256 vestingDuration;        // second
+        uint256 tgePercent;
         uint256 balance;
     }
 
@@ -34,30 +38,32 @@ contract TokenVesting is Ownable {
     mapping(uint256 => mapping(address => Beneficiary)) public beneficiaries;
 
     modifier poolExist(uint256 _poolId) {
-        require(pools[_poolId].duration > 0, "TokenVesting: pool does not exist");
+        require(pools[_poolId].startTime > 0, "TokenVesting: pool does not exist");
         _;
     }
 
     constructor(IERC20 _token)
     {
-        require(address(_token) != address(0), "TokenVesting: address must be not zero");
-
         token = _token;
     }
 
-    function addPool(uint256 _poolId, uint256 _startTime, uint256 _cliff, uint256 _duration)
+    function addPool(uint256 _poolId, uint256 _startTime, uint256 _cliff, uint256 _vestingCliff, uint256 _vestingDuration, uint256 _tgePercent)
         external
         onlyOwner
     {
-        require(pools[_poolId].duration == 0, "TokenVesting: pool existed");
+        require(pools[_poolId].startTime == 0, "TokenVesting: pool existed");
 
-        require(_cliff > 0 && _cliff <= _duration, "TokenVesting: cliff duration is longer than duration");
+        require(_startTime > 0 && _startTime + _cliff + _vestingDuration > block.timestamp, "TokenVesting: final time is before current time");
 
-        require(_startTime + _duration > block.timestamp, "TokenVesting: final time is before current time");
+        require(_cliff > 0, "TokenVesting: cliff time is invalid");
 
-        pools[_poolId] = Pool(_startTime, _cliff, _duration, 0);
+        require(_vestingCliff > 0 && _vestingCliff <= _vestingDuration, "TokenVesting: vesting cliff duration is longer than vesting duration");
 
-        emit PoolAdded(_poolId, _startTime, _cliff, _duration);
+        require(_tgePercent <= ONE_HUNDRED_PERCENT, "TokenVesting: TGE percent is invalid");
+
+        pools[_poolId] = Pool(_startTime, _cliff, _vestingCliff, _vestingDuration, _tgePercent, 0);
+
+        emit PoolAdded(_poolId, _startTime, _cliff, _vestingCliff, _vestingDuration, _tgePercent);
     }
 
     function removePool(uint256 _poolId)
@@ -118,9 +124,9 @@ contract TokenVesting is Ownable {
         for (uint256 i = 0; i < length; i++) {
             uint256 poolId = _poolIds[i];
 
-            require(pools[poolId].duration > 0, "TokenVesting: pool does not exist");
+            require(pools[poolId].startTime > 0, "TokenVesting: pool does not exist");
 
-            uint256 amount = getVestedTokenAmount(poolId, msgSender);
+            uint256 amount = getClaimableAmount(poolId, msgSender);
 
             if (amount == 0) {
                 continue;
@@ -143,7 +149,7 @@ contract TokenVesting is Ownable {
         }
     }
 
-    function getVestedTokenAmount(uint256 _poolId, address _account)
+    function getClaimableAmount(uint256 _poolId, address _account)
         public
         view
         returns (uint256)
@@ -152,18 +158,24 @@ contract TokenVesting is Ownable {
 
         Beneficiary memory beneficiary = beneficiaries[_poolId][_account];
 
-        if (block.timestamp < pool.startTime + pool.cliff) {
+        if (block.timestamp < pool.startTime) {
             return 0;
 
-        } else if (block.timestamp >= pool.startTime + pool.duration) {
+        } else if (block.timestamp >= pool.startTime + pool.cliff + pool.vestingDuration) {
             return beneficiary.balance;
 
         } else {
             uint256 total = beneficiary.balance + beneficiary.released;
 
-            uint256 numCliff = (block.timestamp - pool.startTime) / pool.cliff;
+            uint256 amount = total * pool.tgePercent / ONE_HUNDRED_PERCENT;
 
-            uint256 amount = numCliff * pool.cliff * total / pool.duration;
+            if (block.timestamp >= pool.startTime + pool.cliff) {
+                total -= amount;
+
+                uint256 numCliff = (block.timestamp - pool.startTime - pool.cliff) / pool.vestingCliff + 1;
+
+                amount += (numCliff * pool.vestingCliff * total / pool.vestingDuration);
+            }
 
             return amount > beneficiary.released ? amount - beneficiary.released : 0;
         }
