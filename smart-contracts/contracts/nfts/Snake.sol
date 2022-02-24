@@ -10,11 +10,15 @@ contract Snake is AccessControlEnumerable, ERC721Enumerable, ERC721Burnable  {
 
     event BaseURIChanged(string uri);
 
+    event SnakeCreated(uint256 id, address owner, uint256[] propTypes, uint256[] propValues);
+
     bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
 
     string private _uri;
 
     uint256 public currentId;
+
+    mapping(uint256 => uint256) public props;
 
     constructor(string memory name, string memory symbol, string memory uri) ERC721(name, symbol) {
         _uri = uri;
@@ -34,26 +38,20 @@ contract Snake is AccessControlEnumerable, ERC721Enumerable, ERC721Burnable  {
         emit BaseURIChanged(uri);
     }
 
-    function mint(address to) public virtual {
+    function mint(address to, uint256[] memory propTypes, uint256[] memory propValues) public virtual {
         require(hasRole(MINTER_ROLE, _msgSender()), "Snake: must have minter role to mint");
 
         _mint(to, ++currentId);
-    }
 
-    function mintBatch(address[] memory accounts) public virtual {
-        require(hasRole(MINTER_ROLE, _msgSender()), "Snake: must have minter role to mint");
+        uint256 length = propTypes.length;
 
-        uint256 length = accounts.length;
-
-        require(length > 0, "Snake: array length is invalid");
-
-        uint256 id = currentId;
+        require(length == propValues.length, "Snake: array length is invalid");
 
         for (uint256 i = 0; i < length; i++) {
-            _mint(accounts[i], ++id);
+            props[propTypes[i]] = propValues[i];
         }
 
-        currentId = id;
+        emit SnakeCreated(currentId, to, propTypes, propValues);
     }
 
     function _baseURI() internal view virtual override returns (string memory) {
