@@ -17,7 +17,7 @@ contract Marketplace is OwnableUpgradeable, PausableUpgradeable, ReentrancyGuard
     uint256 constant public ONE_HUNDRED_PERCENT = 10000; // 100%
 
     event SystemFeePercentUpdated(uint256 percent);
-    event AdminWalletUpdated(address wallet);
+    event TreasuryWalletUpdated(address wallet);
     event Erc20WhitelistUpdated(address[] erc20s, bool status);
     event Erc721WhitelistUpdated(address[] erc721s, bool status);
 
@@ -31,7 +31,7 @@ contract Marketplace is OwnableUpgradeable, PausableUpgradeable, ReentrancyGuard
 
     uint256 public systemFeePercent;
 
-    address public adminWallet;
+    address public treasuryWallet;
 
     // erc20 address => status
     mapping(address => bool) public erc20Whitelist;
@@ -77,7 +77,7 @@ contract Marketplace is OwnableUpgradeable, PausableUpgradeable, ReentrancyGuard
 
         systemFeePercent = 250; // 2.5%
 
-        adminWallet = _msgSender();
+        treasuryWallet = _msgSender();
     }
 
     function setSystemFeePercent(uint256 percent)
@@ -91,15 +91,15 @@ contract Marketplace is OwnableUpgradeable, PausableUpgradeable, ReentrancyGuard
         emit SystemFeePercentUpdated(percent);
     }
 
-    function setAdminWallet(address wallet)
+    function setTreasuryWallet(address wallet)
         public
         onlyOwner
     {
         require(wallet != address(0), "Marketplace: address is invalid");
 
-        adminWallet = wallet;
+        treasuryWallet = wallet;
 
-        emit AdminWalletUpdated(wallet);
+        emit TreasuryWalletUpdated(wallet);
     }
 
     function updateErc20Whitelist(address[] memory erc20s, bool status)
@@ -332,7 +332,7 @@ contract Marketplace is OwnableUpgradeable, PausableUpgradeable, ReentrancyGuard
 
         if (erc20 == address(0)) {
             if (systemFeePayment > 0) {
-                payable(adminWallet).transfer(systemFeePayment);
+                payable(treasuryWallet).transfer(systemFeePayment);
             }
 
             if (sellerPayment > 0) {
@@ -341,7 +341,7 @@ contract Marketplace is OwnableUpgradeable, PausableUpgradeable, ReentrancyGuard
 
         } else {
             if (systemFeePayment > 0) {
-                IERC20(erc20).safeTransfer(adminWallet, systemFeePayment);
+                IERC20(erc20).safeTransfer(treasuryWallet, systemFeePayment);
             }
 
             if (sellerPayment > 0) {
