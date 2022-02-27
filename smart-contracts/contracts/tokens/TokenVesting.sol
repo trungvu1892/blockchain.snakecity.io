@@ -100,12 +100,12 @@ contract TokenVesting is Ownable {
 
             total += amount;
 
-            pools[_poolId].balance += amount;
-
             beneficiaries[_poolId][account].balance += amount;
 
             emit TokenLocked(_poolId, account, amount);
         }
+
+        pools[_poolId].balance += total;
 
         token.safeTransferFrom(_msgSender(), address(this), total);
     }
