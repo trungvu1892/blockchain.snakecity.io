@@ -18,6 +18,13 @@ contract OpenSnakeEgg is AccessControlEnumerable, ERC721Enumerable, ERC721Burnab
 
     string private _uri;
 
+    struct SnakeRarity {
+         uint star;
+         uint percentage;
+    }
+
+    SnakeRarity[5] public snakeRarities;
+
     struct SnakeEgg {
         string snakeSpiece;
         uint star;
@@ -32,6 +39,12 @@ contract OpenSnakeEgg is AccessControlEnumerable, ERC721Enumerable, ERC721Burnab
         _uri = uri;
 
         _setupRole(MINTER_ROLE, _msgSender());
+
+        snakeRarities[0] = SnakeRarity({star: 1, percentage: 50});
+        snakeRarities[1] = SnakeRarity({star: 2, percentage: 25});
+        snakeRarities[2] = SnakeRarity({star: 3, percentage: 18});
+        snakeRarities[3] = SnakeRarity({star: 4, percentage: 6});
+        snakeRarities[4] = SnakeRarity({star: 5, percentage: 1});
     }
 
     function setBaseURI(string memory uri) public virtual {
@@ -46,33 +59,40 @@ contract OpenSnakeEgg is AccessControlEnumerable, ERC721Enumerable, ERC721Burnab
         return address(this).balance;    
     }
 
-    function getSpiece() private view returns (string memory) 
+    function getSpiece(uint8 randomSpiece) private pure returns (string memory spiece) 
     {   
-        uint8 randomSpiece = uint8(uint256(keccak256(abi.encodePacked(block.timestamp, randNonce))) %4 );
         if(randomSpiece == 0){
             return "Water";
         }
-        if(randomSpiece == 1){
+        else if(randomSpiece == 1){
             return "Fire";
         }
-        if(randomSpiece == 2){
-            return  "Ice";
+        else if(randomSpiece == 2){
+            return "Ice";
         }
-        if(randomSpiece == 3){
+        else if(randomSpiece == 3){
             return "Land";
         }
-        return "";
     } 
 
-    function getRarity() private pure returns (uint) {
-        return 1;
+    function getRarity() public view returns (uint) {
+        // uint snakeStar = 1;
+        // uint256[] probability;
+        // for (uint256 i = 0; i < snakeRarities.length; i++) {
+        //     // 
+        // }
+        // uint pIndex = uint8(uint256(keccak256(abi.encodePacked(block.timestamp, randNonce))) % 100 );
+        // uint rarity = snakeRarities[probability[pIndex]];
+        // snakeStar = rarity.star;
+        // return snakeStar;
     }
 
     function mint(address to) public virtual payable {
-        require(msg.value >= eggPrice, "Not enough SNCT Token!");
+        // require(msg.value >= eggPrice, "Not enough SNCT Token!");
         _mint(to, ++currentId);
 
-        string memory snakeSpiece = getSpiece();
+  uint8 randomSpiece = uint8(uint256(keccak256(abi.encodePacked(block.timestamp, randNonce))) %4 );
+        string memory snakeSpiece = getSpiece(randomSpiece);
         
         uint star = 1;
 
