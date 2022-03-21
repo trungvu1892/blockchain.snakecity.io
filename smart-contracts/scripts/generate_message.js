@@ -9,12 +9,12 @@ const chainId = 43113; // testnet
 const contract = '0x90DAFb8D266109208B97962Bb15588b268902F7c';
 const amount = '1000000000000000000';
 
-const ctr = new web3.eth.Contract(
+const instance = new web3.eth.Contract(
     [{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"nonces","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"}],
     contract
 );
 
-ctr.methods.nonces(user).call().then((nonce) => {
+instance.methods.nonces(user).call().then((nonce) => {
     // Generates hash for signing
     const hash = '0x' + abi.soliditySHA3(
         ['address', 'uint256', 'uint256', 'uint256', 'address'],

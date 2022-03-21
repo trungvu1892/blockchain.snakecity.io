@@ -31,8 +31,6 @@ contract TokenReward is Ownable, Pausable, ReentrancyGuard {
 
     address public treasuryWallet;
 
-    uint256 public chainId;
-
     uint256 public mintingAmount = 1000 ether;
     uint256 public mintingTime = 24 hours;
 
@@ -40,12 +38,11 @@ contract TokenReward is Ownable, Pausable, ReentrancyGuard {
 
     mapping(address => uint256) public nonces;
 
-    constructor(IToken _token, address _signer, address _treasuryWallet, uint256 _chainId)
+    constructor(IToken _token, address _signer, address _treasuryWallet)
     {
         token = _token;
         signer = _signer;
         treasuryWallet = _treasuryWallet;
-        chainId = _chainId;
     }
 
     function pause()
@@ -143,7 +140,7 @@ contract TokenReward is Ownable, Pausable, ReentrancyGuard {
 
         uint256 nonce = nonces[msgSender];
 
-        bytes32 message = keccak256(abi.encodePacked(msgSender, amount, nonce, chainId, this)).prefixed();
+        bytes32 message = keccak256(abi.encodePacked(msgSender, amount, nonce, block.chainid, this)).prefixed();
 
         require(message.recoverSigner(signature) == signer, "TokenReward: signature is invalid");
 
