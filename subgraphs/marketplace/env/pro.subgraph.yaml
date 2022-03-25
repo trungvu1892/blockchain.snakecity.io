@@ -4,11 +4,11 @@ schema:
 dataSources:
   - kind: ethereum/contract
     name: Marketplace
-    network: bsc
+    network: mainnet
     source:
-      address: "0xd5c734e4aea404e81fd679fcb98be53114f253c6"
+      address: "0x466f2275c396ae360e0687abe4bacc285893c04e"
       abi: Marketplace
-      startBlock: 15716491
+      startBlock: 7748362
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.3
