@@ -85,11 +85,14 @@ module.exports = {
         await runScripts('./src/db/scripts/functions');
 
         // Creates trigger for subgraphs
-        // await createTrigger(config.sg_nft, 'game_item_ownership', 'trg_game_item_create', 'fnc_game_item_create');
-        // await createTrigger(config.sg_nft, 'mystery_box_ownership', 'trg_mystery_box_create', 'fnc_mystery_box_create');
-        // await createTrigger(config.sg_nft, 'mystery_box_sold', 'trg_mystery_box_update', 'fnc_mystery_box_update');
-        // await createTrigger(config.sg_nft, 'mystery_box_opened', 'trg_game_item_update', 'fnc_game_item_update');
-        // await createTrigger(config.sg_marketplace, 'sell_order', 'trg_sell_order_create', 'fnc_sell_order_create');
-        // await createTrigger(config.sg_marketplace, 'matched_order', 'trg_matched_order_create', 'fnc_matched_order_create');
+
+        if (config.sg_nft) {
+            await createTrigger(config.sg_nft, 'snake_ownership', 'trg_snake_ownership_create', 'fnc_snake_ownership_create');
+        }
+
+        if (config.sg_marketplace) {
+            await createTrigger(config.sg_marketplace, 'sell_order', 'trg_sell_order_create', 'fnc_sell_order_create');
+            await createTrigger(config.sg_marketplace, 'matched_order', 'trg_matched_order_create', 'fnc_matched_order_create');
+        }
     }
 };
