@@ -19,7 +19,7 @@ services:
       postgres_pass: K4hL5MwcqxQUk4XZz47
       postgres_db: graph-node
       ipfs: 'ipfs:8080'
-      ethereum: 'chapel:https://data-seed-prebsc-1-s2.binance.org:8545/'
+      ethereum: 'testnet:https://api.avax-test.network/ext/bc/C/rpc'
       RUST_LOG: info
   ipfs:
     image: ipfs/go-ipfs:latest

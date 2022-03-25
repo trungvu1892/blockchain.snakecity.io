@@ -3,64 +3,22 @@ schema:
   file: ./schema.graphql
 dataSources:
   - kind: ethereum/contract
-    name: MysteryBox
-    network: chapel
+    name: Snake
+    network: testnet
     source:
-      address: "0x7F829da287Eb4D7E6cEFd41067bC6686902e58B1"
-      abi: MysteryBox
-      startBlock: 15217296
+      address: "0xE91411D879E4e5Dd97ed390B8215742c769D628F"
+      abi: Snake
+      startBlock: 7747901
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.3
       language: wasm/assemblyscript
       entities:
-        - MysteryBoxOwnership
+        - SnakeOwnership
       abis:
-        - name: MysteryBox
-          file: ./abis/MysteryBox.json
+        - name: Snake
+          file: ./abis/Snake.json
       eventHandlers:
         - event: Transfer(indexed address,indexed address,indexed uint256)
           handler: handleTransfer
-      file: ./src/mappings/mystery_box.ts
-  - kind: ethereum/contract
-    name: GameItem
-    network: chapel
-    source:
-      address: "0x945B11ab86a904cB1a2578840bBaFd36a1FF31e6"
-      abi: GameItem
-      startBlock: 15217296
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.3
-      language: wasm/assemblyscript
-      entities:
-        - GameItemOwnership
-      abis:
-        - name: GameItem
-          file: ./abis/GameItem.json
-      eventHandlers:
-        - event: Transfer(indexed address,indexed address,indexed uint256)
-          handler: handleTransfer
-      file: ./src/mappings/game_item.ts
-  - kind: ethereum/contract
-    name: BoxStore
-    network: chapel
-    source:
-      address: "0xE0043556cD06aFC5ba2206c87057C44D51b123D9"
-      abi: BoxStore
-      startBlock: 15217296
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.3
-      language: wasm/assemblyscript
-      entities:
-        - MysteryBoxSold
-      abis:
-        - name: BoxStore
-          file: ./abis/BoxStore.json
-      eventHandlers:
-        - event: BoxBought(address,uint256[],uint256)
-          handler: handleBoxBought
-        - event: BoxOpened(address,uint256,uint256[],uint256)
-          handler: handleBoxOpened
-      file: ./src/mappings/box_store.ts
+      file: ./src/mappings/snake.ts

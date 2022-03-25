@@ -1,36 +1,8 @@
-type MysteryBoxOwnership @entity {
-    id: ID!                 # transaction hash + box id
-    boxId: BigInt
+type SnakeOwnership @entity {
+    id: ID!                 # transaction hash + snake id
+    snakeId: BigInt
     userFrom: String
     userTo: String
-    transaction: String
-    timestamp: BigInt
-}
-
-type GameItemOwnership @entity {
-    id: ID!                 # transaction hash + item id
-    itemId: BigInt
-    userFrom: String
-    userTo: String
-    transaction: String
-    timestamp: BigInt
-}
-
-type MysteryBoxSold @entity {
-    id: ID!                 # transaction hash + box id
-    boxId: BigInt
-    boxType: BigInt
-    buyer: String
-    transaction: String
-    timestamp: BigInt
-}
-
-type MysteryBoxOpened @entity {
-    id: ID!                 # transaction hash + item id
-    itemId: BigInt
-    boxId: BigInt
-    boxType: BigInt
-    user: String
     transaction: String
     timestamp: BigInt
 }

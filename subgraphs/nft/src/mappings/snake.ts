@@ -1,8 +1,8 @@
 /* eslint-disable prefer-const */
 import { log } from "@graphprotocol/graph-ts";
 
-import { Transfer } from '../types/MysteryBox/MysteryBox';
-import { MysteryBoxOwnership } from '../types/schema';
+import { Transfer } from '../types/Snake/Snake';
+import { SnakeOwnership } from '../types/schema';
 
 export function handleTransfer (event: Transfer): void {
     let userFrom = event.params.from.toHex();
@@ -11,10 +11,10 @@ export function handleTransfer (event: Transfer): void {
     let transaction = event.transaction.hash.toHex();
     let timestamp = event.block.timestamp;
 
-    log.info('Mystery Box, userFrom: {}, userTo: {}, tokenId: {}', [userFrom, userTo, tokenId.toString()]);
+    log.info('Snake, userFrom: {}, userTo: {}, tokenId: {}', [userFrom, userTo, tokenId.toString()]);
 
-    let history = new MysteryBoxOwnership(transaction + '_' + tokenId.toString());
-    history.boxId = tokenId;
+    let history = new SnakeOwnership(transaction + '_' + tokenId.toString());
+    history.snakeId = tokenId;
     history.userFrom = userFrom;
     history.userTo = userTo;
     history.transaction = transaction;

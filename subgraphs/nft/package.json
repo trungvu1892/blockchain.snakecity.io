@@ -4,12 +4,9 @@
   "scripts": {
     "codegen": "graph codegen --output-dir src/types/",
     "build": "graph build",
-    "create-dev": "graph create nft --node http://161.97.108.245:8020",
-    "deploy-dev": "graph deploy nft --node http://161.97.108.245:8020 --ipfs http://161.97.108.245:5001",
-    "remove-dev": "graph remove nft --node http://161.97.108.245:8020",
-    "create-stg": "graph create nft --node http://194.233.86.215:8020",
-    "deploy-stg": "graph deploy nft --node http://194.233.86.215:8020 --ipfs http://194.233.86.215:5001",
-    "remove-stg": "graph remove nft --node http://194.233.86.215:8020"
+    "create-dev": "graph create nft --node http://localhost:8020",
+    "deploy-dev": "graph deploy nft --node http://localhost:8020 --ipfs http://localhost:5001",
+    "remove-dev": "graph remove nft --node http://localhost:8020"
   },
   "devDependencies": {
     "@graphprotocol/graph-cli": "^0.19.0",
